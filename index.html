@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+
+
+        $(document).ready(function() {
+
+            $(".game").hide();
+            $("#p1Text").show();
+            $("#p2Text").hide();
+            $("#waiting").hide();
+            $("#sendMoveDiv").hide();
+
+            $.get("/game/reset", function(data, status) {
+                //location.reload();
+            });
+
+            $("#sendMove").click(function() {
+                $.get("/player/move", {
+                    colPosition: $('#colPosition').val(),
+                    rowPosition: $('#rowPosition').val(),
+                    playername: $('#player1name').val()
+                }, function(data, status) {
+                    	 $( ".game" ).empty();
+                    // $.get("/game/state", function(data, status) {
+                                // alert("Data: " + data);
+                                console.log('data.board' + data.board)
+                                console.log('data.player : ' + data.player)
+                                $.each(data.board, function(index, value) {
+                                    line = '<br>'
+                                    $.each(value, function(index, value2) {
+                                        line = line + '[' + value2 + ']'
+                                        //console.log( index + ": " + '['+value2+']' );
+                                    })
+                                    line = line + '<br>'
+                                    console.log('line' + line)
+                                    $('.game').append(line);
+                                    $("#sendMoveDiv").show();
+
+
+                                });
+
+                               if(data.isWin == true) {
+                               		$.get("/player/winner", function(data, status) {
+
+                               		$('.game').append("<div>Player"+data.winner+ " has won, refresh this page to begin a new game</div>");
+                               	})
+                               }
+                               else {
+$('.game').append("<div>Player"+data.player+ ", its your turn </div>");
+                               }
+                });
+            });
+
+
+            $("#newGame").click(function() {
+                $.get("/game/reset", function(data, status) {
+                    location.reload();
+                });
+            });
+
+            $("#player1Add").click(function() {
+                $.get("/player/add", {
+                    playername: $('#player1name').val()
+                }, function(data, status) {
+
+                    $.get("/player/status", function(data, status) {
+
+                        if (data.numberplayers == 1) {
+                            $("#waiting").show();
+                            $("#p1Text").hide();
+                            $("#p2Text").show();
+
+                        }
+                    });
+
+                });
+            });
+
+            $("#player2Add").click(function() {
+                $.get("/player/add", {
+                    playername: $('#player2name').val()
+                }, function(data, status) {
+
+                    $.get("/player/status", function(data, status) {
+
+                        if (data.numberplayers == 2) {
+                            $("#waiting").hide();
+                            $("#p1Text").hide();
+                            $("#p2Text").hide();
+                            $(".game").show();
+
+                            $.get("/game/state", function(data, status) {
+                                // alert("Data: " + data);
+                                console.log('data.board' + data.board)
+                                console.log('data.player : ' + data.player)
+                                $.each(data.board, function(index, value) {
+                                    line = '<br>'
+                                    $.each(value, function(index, value2) {
+                                        line = line + '[' + value2 + ']'
+                                        //console.log( index + ": " + '['+value2+']' );
+                                    })
+                                    line = line + '<br>'
+                                    console.log('line' + line)
+                                    $('.game').append(line);
+                                });
+
+                            });
+                            	$('.game').append("<div>Player "+$('#player1name').val()+ ", its your turn </div>");
+                                    $("#sendMoveDiv").show();
+                        }
+                    });
+
+                });
+            });
+
+        });
+
+    </script>
+</head>
+
+<body>
+
+<center>
+
+    <div>
+    	 <header>
+    <h1>5-in-a-row challenge</h1>
+  </header>
+
+        
+    </div>
+
+    <div id="waiting">
+        Waiting for another player
+    </div>
+
+    <div id="p1Text">
+        Player1 (X) name: <input type="text" id="player1name"><button id="player1Add">Add</button>
+    </div>
+    <div id="p2Text">
+        Player2 (O) name <input type="text" id="player2name"><button id="player2Add">Add</button>
+    </div>
+
+
+    <div class="game">
+        <div id="p1">
+        </div>
+    </div>
+
+    <div id="sendMoveDiv">
+    	        Row Position <input type="text" size="2" id="rowPosition">
+        Column Position <input type="text" size="2" id="colPosition">
+
+        <button id="sendMove">Send Move</button>
+
+</center>
+
+        <!--
+
+Position <input type="text" id="position"> -->
+
+
+
+    </div>
+
+    <!-- <button id="newGame">New Game</button>
+ -->
+
+<h1>Challenge notes</h1>
+
+<h2>Installation</h2>
+
+<ul>
+  <li>Install Node.js from https://nodejs.org/en/download/</li>
+
+   <li>Refreshing the page restarts the application</li>
+
+   <li>Assumption is game is played from single client machine</li>
+</ul>
+
+
+
+<h2>Running the application</h2>
+        <div>
+            
+            From technical-challenge folder
+            execute 'npm install'
+            execute 'node server.js'
+
+        </div>
+        Description
+        On visiting homepage the first user is assigned name 'Player1', second user is assigned 'Player2'
+        <div>
+
+<h2>Assumptions</h2>
+
+<ul>
+    <li> Using HTTP rest as this is mentioned in document. Ideally would utiize websockets but assumed this was not required as sockets use ws protocol instead of http. </li>
+   <li>Assumption is game is played from single client machine</li>
+   <li>Column and row positions are not 0 index based</li>
+</ul>
+
+        </div>
+
+
+</body>
