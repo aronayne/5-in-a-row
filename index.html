@@ -4,9 +4,12 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+<style>
+body {
+    font: normal 14px Verdana, Arial, sans-serif;
+}
+</style>
     <script>
-
-
         $(document).ready(function() {
 
             $(".game").hide();
@@ -16,7 +19,7 @@
             $("#sendMoveDiv").hide();
 
             $.get("/game/reset", function(data, status) {
-                //location.reload();
+                alert('Enter player names and start game!')
             });
 
             $("#sendMove").click(function() {
@@ -25,41 +28,33 @@
                     rowPosition: $('#rowPosition').val(),
                     playername: $('#player1name').val()
                 }, function(data, status) {
-                    	 $( ".game" ).empty();
+                    $(".game").empty();
                     // $.get("/game/state", function(data, status) {
-                                // alert("Data: " + data);
-                                console.log('data.board' + data.board)
-                                console.log('data.player : ' + data.player)
-                                $.each(data.board, function(index, value) {
-                                    line = '<br>'
-                                    $.each(value, function(index, value2) {
-                                        line = line + '[' + value2 + ']'
-                                        //console.log( index + ": " + '['+value2+']' );
-                                    })
-                                    line = line + '<br>'
-                                    console.log('line' + line)
-                                    $('.game').append(line);
-                                    $("#sendMoveDiv").show();
+                    // alert("Data: " + data);
+                    console.log('data.board' + data.board)
+                    console.log('data.player : ' + data.player)
+                    $.each(data.board, function(index, value) {
+                        line = '<br>'
+                        $.each(value, function(index, value2) {
+                            line = line + '[' + value2 + ']'
+                            //console.log( index + ": " + '['+value2+']' );
+                        })
+                        line = line + '<br>'
+                        console.log('line' + line)
+                        $('.game').append(line);
+                        $("#sendMoveDiv").show();
 
 
-                                });
+                    });
 
-                               if(data.isWin == true) {
-                               		$.get("/player/winner", function(data, status) {
+                    if (data.isWin == true) {
+                        $.get("/player/winner", function(data, status) {
 
-                               		$('.game').append("<div>Player"+data.winner+ " has won, refresh this page to begin a new game</div>");
-                               	})
-                               }
-                               else {
-$('.game').append("<div>Player"+data.player+ ", its your turn </div>");
-                               }
-                });
-            });
-
-
-            $("#newGame").click(function() {
-                $.get("/game/reset", function(data, status) {
-                    location.reload();
+                            $('.game').append("<div>Player" + data.winner + " has won, refresh this page to begin a new game</div>");
+                        })
+                    } else {
+                        $('.game').append("<div>Player" + data.player + " , its your turn </div>");
+                    }
                 });
             });
 
@@ -68,7 +63,7 @@ $('.game').append("<div>Player"+data.player+ ", its your turn </div>");
                     playername: $('#player1name').val()
                 }, function(data, status) {
 
-                    $.get("/player/status", function(data, status) {
+                    $.get("/player/numberplayers", function(data, status) {
 
                         if (data.numberplayers == 1) {
                             $("#waiting").show();
@@ -86,7 +81,7 @@ $('.game').append("<div>Player"+data.player+ ", its your turn </div>");
                     playername: $('#player2name').val()
                 }, function(data, status) {
 
-                    $.get("/player/status", function(data, status) {
+                    $.get("/player/numberplayers", function(data, status) {
 
                         if (data.numberplayers == 2) {
                             $("#waiting").hide();
@@ -110,8 +105,8 @@ $('.game').append("<div>Player"+data.player+ ", its your turn </div>");
                                 });
 
                             });
-                            	$('.game').append("<div>Player "+$('#player1name').val()+ ", its your turn </div>");
-                                    $("#sendMoveDiv").show();
+                            $('.game').append("<div>Player " + $('#player1name').val() + ", its your turn </div>");
+                            $("#sendMoveDiv").show();
                         }
                     });
 
@@ -119,93 +114,82 @@ $('.game').append("<div>Player"+data.player+ ", its your turn </div>");
             });
 
         });
-
     </script>
 </head>
 
 <body>
 
-<center>
+    <center>
 
-    <div>
-    	 <header>
-    <h1>5-in-a-row challenge</h1>
-  </header>
-
-        
-    </div>
-
-    <div id="waiting">
-        Waiting for another player
-    </div>
-
-    <div id="p1Text">
-        Player1 (X) name: <input type="text" id="player1name"><button id="player1Add">Add</button>
-    </div>
-    <div id="p2Text">
-        Player2 (O) name <input type="text" id="player2name"><button id="player2Add">Add</button>
-    </div>
-
-
-    <div class="game">
-        <div id="p1">
-        </div>
-    </div>
-
-    <div id="sendMoveDiv">
-    	        Row Position <input type="text" size="2" id="rowPosition">
-        Column Position <input type="text" size="2" id="colPosition">
-
-        <button id="sendMove">Send Move</button>
-
-</center>
-
-        <!--
-
-Position <input type="text" id="position"> -->
-
-
-
-    </div>
-
-    <!-- <button id="newGame">New Game</button>
- -->
-
-<h1>Challenge notes</h1>
-
-<h2>Installation</h2>
-
-<ul>
-  <li>Install Node.js from https://nodejs.org/en/download/</li>
-
-   <li>Refreshing the page restarts the application</li>
-
-   <li>Assumption is game is played from single client machine</li>
-</ul>
-
-
-
-<h2>Running the application</h2>
         <div>
-            
-            From technical-challenge folder
-            execute 'npm install'
-            execute 'node server.js'
+            <header>
+                <h1>5-in-a-row challenge</h1>
+            </header>
 
-        </div>
-        Description
-        On visiting homepage the first user is assigned name 'Player1', second user is assigned 'Player2'
-        <div>
-
-<h2>Assumptions</h2>
-
-<ul>
-    <li> Using HTTP rest as this is mentioned in document. Ideally would utiize websockets but assumed this was not required as sockets use ws protocol instead of http. </li>
-   <li>Assumption is game is played from single client machine</li>
-   <li>Column and row positions are not 0 index based</li>
-</ul>
 
         </div>
 
+        <div id="waiting">
+            Waiting for another player
+        </div>
 
-</body>
+        <div id="p1Text">
+            Player1 (0) name: <input type="text" id="player1name"><button id="player1Add">Add</button>
+        </div>
+        <div id="p2Text">
+            Player2 (X) name <input type="text" id="player2name"><button id="player2Add">Add</button>
+        </div>
+
+
+        <div class="game">
+            <div id="p1">
+            </div>
+        </div>
+
+        <div id="sendMoveDiv">
+            Row Position <input type="text" size="2" id="rowPosition">
+            Column Position <input type="text" size="2" id="colPosition">
+
+            <button id="sendMove">Send Move</button>
+
+    </center>
+
+    </div>
+
+
+    <h1>Notes : </h1>
+
+    <h2>Installation</h2>
+
+    <ul>
+        <li>Install Node.js from https://nodejs.org/en/download/ .</li>
+        <li>From technical-challenge folder execute 1. 'npm install' , 2. 'node server.js' .</li>
+        <li>By default the application runs on port 3000.</li>
+        <li>Project source pushed to Github: 
+<a href="https://github.com/aronayne/5-in-a-row">here</a></li>
+    </ul>
+
+    <h2>Running the application</h2>
+
+    <ul>
+        <li>Refreshing this page will restart the application.</li>
+
+
+        <li> On visiting homepage the first user is assigned name 'Player1', second user is assigned 'Player2'
+        </li>
+
+        <li>Unit tests are executed as part of running the application, tests are located in file server.js and exectued within function 'applictionTests()'</li>
+
+        <li>First player to join is assigned 'O', second player to join is assigned 'X'.
+
+    </ul>
+
+    <h2>Assumptions</h2>
+
+    <ul>
+        <li> Using HTTP rest as this is mentioned in document. Ideally would utiize websockets in order for this application to be stateless. Assumed websockets not required as use ws protocol instead of http.</li>
+        <li>Assumption is game is played from single client machine and not multiple machines.</li>
+
+    </ul>
+
+    </div>

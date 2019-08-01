@@ -18,23 +18,14 @@ function getName() {
     return names[index]
 }
 
-app.get('/player/status', function(req, res) {
+// Return the number of players
+app.get('/player/numberplayers', function(req, res) {
     res.send({
         numberplayers: names.length
     })
 })
 
-app.get('/player/connect', function(req, res) {
-
-    var nameValue = getName();
-
-    var player = {
-        name: nameValue
-    };
-    console.log('Player ' + nameValue + ' connected')
-    res.send(player)
-})
-
+// Add a player to the game
 app.get('/player/add', function(req, res) {
 
     index = index + 1
@@ -45,6 +36,7 @@ app.get('/player/add', function(req, res) {
     })
 })
 
+// Rest all variables in order to initiaite a new game
 app.get('/game/reset', function(req, res) {
     names = []
     resetBoard()
@@ -84,8 +76,15 @@ function resetBoard() {
 }
 
 
-function tests() {
+function applicationTests() {
 
+    // Test winner for X on vertical
+    //[[ 'O', 'X', 'X', 'X', 'X', 'X', 'O', 'O', 'O' ],
+    // [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ] ]
     resetBoard()
     board[0][0] = 'O'
     board[0][1] = 'X'
@@ -98,6 +97,13 @@ function tests() {
     board[0][8] = 'O'
     assert(isWinner() == true)
 
+    // Test winner for X on horizontal
+    // [[ 'O', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+    //  [ 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ 'O', ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ' ],
+    //  [ 'O', ' ', ' ', ' ', ' ', ' ', ' ', 'X', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ] ]
     resetBoard()
     board[0][0] = 'O'
     board[1][0] = 'O'
@@ -110,6 +116,13 @@ function tests() {
     board[5][8] = 'X'
     assert(isWinner() == true)
 
+    // Test winner for X on diagonal from upper left to lower right
+    // [[ 'O', 'O', 'O', 'O', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ] ]
     resetBoard()
     board[0][0] = 'O'
     board[0][1] = 'O'
@@ -123,6 +136,12 @@ function tests() {
     assert(isWinner() == true)
 
     // Testing diaganol left to right
+    // [[' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', 'O', ' ', ' ', ' ', 'O', ' ', ' ' ],
+    // [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', '0', ' ' ],
+    // [ 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ]]
     resetBoard()
     board[5][0] = 'O'
     board[4][1] = 'O'
@@ -135,6 +154,13 @@ function tests() {
     board[5][8] = 'X'
     assert(isWinner() == true)
 
+    //Test no winner for this board
+   // [[ ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+   //  [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
+   //  [ ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ' ],
+   //  [ ' ', ' ', 'X', ' ', ' ', ' ', 'O', ' ', ' ' ],
+   //  [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', '0', ' ' ],
+   //  [ 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ]]
     resetBoard()
     board[5][0] = 'O'
     board[4][1] = 'O'
@@ -147,7 +173,14 @@ function tests() {
     board[5][8] = 'X'
     assert(isWinner() == false)
 
-        resetBoard()
+    // Test diaganol from lower left to upper right
+    // [[ ' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', 'O', ' ', ' ', 'O', ' ', ' ' ],
+    // [ ' ', ' ', 'O', ' ', ' ', ' ', ' ', '0', ' ' ],
+    // [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ]]
+    resetBoard()
     board[5][1] = 'O'
     board[4][2] = 'O'
     board[3][3] = 'O'
@@ -159,7 +192,13 @@ function tests() {
     board[5][8] = 'X'
     assert(isWinner() == true)
 
-
+    //Test no winner for this board
+    // [[' ', ' ', ' ', ' ', ' ', 'X', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
+    // [ ' ', ' ', ' ', 'X', ' ', ' ', 'O', ' ', ' ' ],
+    // [ ' ', ' ', 'O', ' ', ' ', ' ', ' ', '0', ' ' ],
+    // [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ', 'X' ]]
     resetBoard()
     board[5][1] = 'O'
     board[4][2] = 'O'
@@ -172,14 +211,15 @@ function tests() {
     board[5][8] = 'X'
     assert(isWinner() == false)
 
-    resetBoard()
+    // Test diaganol from lower left to upper right
     // Testing this board : is valid so should return true
- // [[ ' ', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ' ],
- //  [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
- //  [ ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ' ],
- //  [ ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ' ],
- //  [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
- //  [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ]]
+    // [[ ' ', ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', 'O', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ],
+    //  [ ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' ]]
+    resetBoard()
     board[4][1] = 'O'
     board[3][2] = 'O'
     board[2][3] = 'O'
@@ -189,28 +229,27 @@ function tests() {
 
 }
 
-tests() 
-
- 
+//Execute the tests as part of server startup
+applicationTests()
 
 function isWinner() {
 
-    console.log('board is' , board)
+    console.log('board is', board)
 
     //Determine if winner contained within row
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 6; ii++) {
-        //  console.log(ii , i)
+            //  console.log(ii , i)
             if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii][i + 1] && board[ii][i] == board[ii][i + 2] && board[ii][i] == board[ii][i + 3] && board[ii][i] == board[ii][i + 4]) {
                 return true
             }
         }
     }
 
-    //Determine if winner contained within column    
+    //Determine if winner contained within column
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 5; ii++) {
-          //console.log(ii , i)
+            //console.log(ii , i)
             if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii + 1][i] && board[ii][i] == board[ii + 2][i] && board[ii][i] == board[ii + 3][i] && board[ii][i] == board[ii][i]) {
                 return true
             }
@@ -221,30 +260,26 @@ function isWinner() {
     //Top left to bottom right
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 5; ii++) {
-          //  console.log(ii , i)
+            //  console.log(ii , i)
             if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii + 1][i + 1] && board[ii][i] == board[ii + 2][i + 2] && board[ii][i] == board[ii + 3][i + 3] && board[ii][i] == board[ii + 4][i + 4]) {
                 return true
             }
         }
     }
 
-// bottom left to top right
-try {
-    for (var i = 5; i >= 0; i--) {
-        for (var ii = 0; ii < 5; ii++) {
-            // console.log('here'+i-4)
-            // console.log('here'+ii+4)
-           // console.log(board[i - 4][ii + 4])
-            if ( (board[i][ii] == 'X' || board[i][ii] == 'O') && board[i][ii] == board[i - 1][ii + 1] && board[i][ii] == board[i - 2][ii + 2] && board[i][ii] == board[i - 3][ii + 3] && board[i][ii] == board[i - 4][ii + 4]) {
-                
-                return true
+    // bottom left to top right
+    try {
+        for (var i = 5; i >= 0; i--) {
+            for (var ii = 0; ii < 5; ii++) {
+                if ((board[i][ii] == 'X' || board[i][ii] == 'O') && board[i][ii] == board[i - 1][ii + 1] && board[i][ii] == board[i - 2][ii + 2] && board[i][ii] == board[i - 3][ii + 3] && board[i][ii] == board[i - 4][ii + 4]) {
+
+                    return true
+                }
             }
         }
+    } catch (err) {
+        return false
     }
-    }
-catch(err) {
-  return false
-}
 
     return false
 
@@ -252,53 +287,51 @@ catch(err) {
 
 nameIndex = -1
 
+// Return the current board state
 app.get('/game/state', function(req, res) {
-    console.log('Game state')
     nameIndex = nameIndex + 1
     res.send({
         'board': board,
         'player': names[nameIndex]
     })
-    if(nameIndex == 1) {
-      nameIndex = -1
+    if (nameIndex == 1) {
+        nameIndex = -1
     }
 })
 
+// Return the winner of the game
 app.get('/player/winner', function(req, res) {
-  console.log('/winner' + names[nameIndex])
-      if(nameIndex == -1) {
-      nameIndex = nameIndex + 1
+    console.log('/winner' + names[nameIndex])
+    if (nameIndex == -1) {
+        nameIndex = nameIndex + 1
     }
-  res.send( {winner : names[nameIndex]} )
+    res.send({
+        winner: names[nameIndex]
+    })
 })
 
-// movedindex = -1
+// Move a position on the board
 app.get('/player/move', function(req, res) {
 
     nameIndex = nameIndex + 1
 
-    if(nameIndex == 0){
-      board[req.query.rowPosition-1][req.query.colPosition-1] = 'O'
-    }
-    else if (nameIndex == 1){
-       board[req.query.rowPosition-1][req.query.colPosition-1] = 'X'
+    if (nameIndex == 0) {
+        board[req.query.rowPosition - 1][req.query.colPosition - 1] = 'O'
+    } else if (nameIndex == 1) {
+        board[req.query.rowPosition - 1][req.query.colPosition - 1] = 'X'
     }
 
     var isWin = isWinner()
     res.send({
         'board': board,
         'player': names[nameIndex],
-        'isWin' : isWinner()
+        'isWin': isWinner()
     })
-    if(nameIndex == 1) {
-      console.log('resetting')
-      nameIndex = -1
+    if (nameIndex == 1) {
+        console.log('resetting')
+        nameIndex = -1
     }
 
-})
-
-app.post('/testpost', function(req, res) {
-    res.send(objpost)
 })
 
 app.use('/', express.static(__dirname + '/'));
