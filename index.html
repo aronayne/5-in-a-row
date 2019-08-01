@@ -28,7 +28,18 @@ body {
                     playername: $('#player1name').val()
                 }, function(data, status) {
                     $(".game").empty();
-                    console.log('data.board' + data.board)
+
+                    // For each move determine if the game has been won and update the UI accordingly
+                    if (data.isWin == true) {
+                        $.get("/player/winner", function(data, status) {
+
+                            $('.game').append("<div style='padding-top:30px'>Player " + data.winner + " has won, refresh this page to begin a new game</div>");
+                        })
+                    } else {
+                        $('.game').append("<div style='padding-top=10px'>Player " + data.player + " , its your turn </div>");
+                    }
+
+                                        console.log('data.board' + data.board)
                     console.log('data.player : ' + data.player)
                     $.each(data.board, function(index, value) {
                         line = '<br>'
@@ -44,15 +55,6 @@ body {
 
                     });
 
-                    // For each move determine if the game has been won and update the UI accordingly
-                    if (data.isWin == true) {
-                        $.get("/player/winner", function(data, status) {
-
-                            $('.game').append("<div>Player" + data.winner + " has won, refresh this page to begin a new game</div>");
-                        })
-                    } else {
-                        $('.game').append("<div>Player" + data.player + " , its your turn </div>");
-                    }
                 });
             });
 
@@ -129,15 +131,15 @@ body {
 
         </div>
 
-        <div id="waiting">
+        <div style="padding-bottom:20px" id="waiting">
             Waiting for another player
         </div>
 
         <div id="p1Text">
-            Player1 name: <input type="text" id="player1name"><button id="player1Add">Add</button>
+            <input type="text" size=12 placeholder="Player1 Name" id="player1name"><button id="player1Add">Add</button>
         </div>
         <div id="p2Text">
-            Player2  name <input type="text" id="player2name"><button id="player2Add">Add</button>
+            <input type="text" size=12 placeholder="Player2 Name" id="player2name"><button id="player2Add">Add</button>
         </div>
 
 
@@ -146,7 +148,7 @@ body {
             </div>
         </div>
 
-        <div id="sendMoveDiv">
+        <div style="padding-top:10px" id="sendMoveDiv">
             Row Position <input type="text" size="2" id="rowPosition">
             Column Position <input type="text" size="2" id="colPosition">
 
@@ -155,9 +157,6 @@ body {
     </center>
 
     </div>
-
-
-    <h1>Notes : </h1>
 
     <h2>Installation</h2>
 
@@ -187,7 +186,10 @@ body {
 
     <ul>
         <li> Using HTTP rest as this is mentioned in document. Ideally would utiize websockets in order for this application to be stateless. Assumed websockets not required as use ws protocol instead of http.</li>
+
         <li>Assumption is game is played from single client machine and not multiple machines.</li>
+
+        <li>Validation has not been added, please ensure to use valid integer when setting column and row move positons.</li>
 
     </ul>
 
