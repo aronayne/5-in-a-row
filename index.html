@@ -18,10 +18,9 @@ body {
             $("#waiting").hide();
             $("#sendMoveDiv").hide();
 
-            $.get("/game/reset", function(data, status) {
-                alert('Enter player names and start game!')
-            });
+            $.get("/game/reset", function(data, status) {});
 
+            // Send the move to service endpoint
             $("#sendMove").click(function() {
                 $.get("/player/move", {
                     colPosition: $('#colPosition').val(),
@@ -29,8 +28,6 @@ body {
                     playername: $('#player1name').val()
                 }, function(data, status) {
                     $(".game").empty();
-                    // $.get("/game/state", function(data, status) {
-                    // alert("Data: " + data);
                     console.log('data.board' + data.board)
                     console.log('data.player : ' + data.player)
                     $.each(data.board, function(index, value) {
@@ -47,6 +44,7 @@ body {
 
                     });
 
+                    // For each move determine if the game has been won and update the UI accordingly
                     if (data.isWin == true) {
                         $.get("/player/winner", function(data, status) {
 
@@ -58,6 +56,7 @@ body {
                 });
             });
 
+            // Add first player to the game
             $("#player1Add").click(function() {
                 $.get("/player/add", {
                     playername: $('#player1name').val()
@@ -76,6 +75,7 @@ body {
                 });
             });
 
+            // Add second player to the game
             $("#player2Add").click(function() {
                 $.get("/player/add", {
                     playername: $('#player2name').val()
@@ -134,10 +134,10 @@ body {
         </div>
 
         <div id="p1Text">
-            Player1 (0) name: <input type="text" id="player1name"><button id="player1Add">Add</button>
+            Player1 name: <input type="text" id="player1name"><button id="player1Add">Add</button>
         </div>
         <div id="p2Text">
-            Player2 (X) name <input type="text" id="player2name"><button id="player2Add">Add</button>
+            Player2  name <input type="text" id="player2name"><button id="player2Add">Add</button>
         </div>
 
 
@@ -165,8 +165,9 @@ body {
         <li>Install Node.js from https://nodejs.org/en/download/ .</li>
         <li>From technical-challenge folder execute 1. 'npm install' , 2. 'node server.js' .</li>
         <li>By default the application runs on port 3000.</li>
-        <li>Project source pushed to Github: 
-<a href="https://github.com/aronayne/5-in-a-row">here</a></li>
+<li>Instance of this application is running on Amazon Lightsail instance <a href="http://18.130.213.20:3000">here</a></li> 
+        <li>Project source pushed to Github: <a href="https://github.com/aronayne/5-in-a-row">here</a></li>
+        <li>Tested on Google Chrome & Firefox</li>
     </ul>
 
     <h2>Running the application</h2>
@@ -179,8 +180,6 @@ body {
         </li>
 
         <li>Unit tests are executed as part of running the application, tests are located in file server.js and exectued within function 'applictionTests()'</li>
-
-        <li>First player to join is assigned 'O', second player to join is assigned 'X'.
 
     </ul>
 
