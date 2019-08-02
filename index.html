@@ -3,6 +3,7 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
 
 <style>
 body {
@@ -33,7 +34,7 @@ body {
                     if (data.isWin == true) {
                         $.get("/player/winner", function(data, status) {
 
-                            $('.game').append("<div style='padding-top:30px'>Player " + data.winner + " has won, refresh this page to begin a new game</div>");
+                            $('.game').append("<div style='padding-top:30px'>Player " + data.winner + " has won, refresh this page to begin a new game.</div>");
                         })
                     } else {
                         $('.game').append("<div style='padding-top=10px'>Player " + data.player + " , its your turn </div>");
@@ -45,14 +46,11 @@ body {
                         line = '<br>'
                         $.each(value, function(index, value2) {
                             line = line + '[' + value2 + ']'
-                            //console.log( index + ": " + '['+value2+']' );
                         })
                         line = line + '<br>'
                         console.log('line' + line)
                         $('.game').append(line);
                         $("#sendMoveDiv").show();
-
-
                     });
 
                 });
@@ -149,8 +147,8 @@ body {
         </div>
 
         <div style="padding-top:10px" id="sendMoveDiv">
-            Row Position <input type="text" size="2" id="rowPosition">
-            Column Position <input type="text" size="2" id="colPosition">
+            <input type="text" placeholder="Row" size="2" id="rowPosition">
+            <input type="text" placeholder="Col" size="2" id="colPosition">
 
             <button id="sendMove">Send Move</button>
 
@@ -161,36 +159,29 @@ body {
     <h2>Installation</h2>
 
     <ul>
+        <li>Clone repository from <a href="https://github.com/aronayne/5-in-a-row">here</a></li>
         <li>Install Node.js from https://nodejs.org/en/download/ .</li>
-        <li>From technical-challenge folder execute 1. 'npm install' , 2. 'node server.js' .</li>
-        <li>By default the application runs on port 3000.</li>
-<li>Instance of this application is running on Amazon Lightsail instance <a href="http://18.130.213.20:3000">here</a></li> 
-        <li>Project source pushed to Github: <a href="https://github.com/aronayne/5-in-a-row">here</a></li>
-        <li>Tested on Google Chrome & Firefox</li>
+        <li>From technical-challenge folder created as a result of cloned repository execute 1. 'npm install' , 2. 'node server.js' .</li>
+        <li>By default the application listens on port 3000.</li>
+        <li>An instance of this application is running on Amazon Lightsail instance <a href="http://18.130.213.20:3000">here</a></li> 
+        <li>This application has been tested on Google Chrome & Firefox browsers.</li>
     </ul>
 
     <h2>Running the application</h2>
 
     <ul>
-        <li>Refreshing this page will restart the application.</li>
-
-
-        <li> On visiting homepage the first user is assigned name 'Player1', second user is assigned 'Player2'
-        </li>
-
+        <li>Refreshing this page will restart the game, clearing the current game state.</li>
         <li>Unit tests are executed as part of running the application, tests are located in file server.js and exectued within function 'applictionTests()'</li>
-
     </ul>
 
     <h2>Assumptions</h2>
 
     <ul>
-        <li> Using HTTP rest as this is mentioned in document. Ideally would utiize websockets in order for this application to be stateless. Assumed websockets not required as use ws protocol instead of http.</li>
-
-        <li>Assumption is game is played from single client machine and not multiple machines.</li>
-
-        <li>Validation has not been added, please ensure to use valid integer when setting column and row move positons.</li>
-
+        <li>As detailed in requirements document game moves are sent via REST requests.</li>
+        <li>Each game is played from a single client machine.</li>
+        <li>Validation has not been added, please ensure to use valid integer values when setting column and row move positons & row and column values are within valid range.</li>
     </ul>
 
     </div>
+</body>
+</html>

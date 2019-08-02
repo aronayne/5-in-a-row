@@ -13,12 +13,7 @@ app.get('/', function(req, res) {
 app.listen(3000);
 
 names = []
-var index = -1
-
-function getName() {
-    index = index + 1
-    return names[index]
-}
+var nameIndex = -1
 
 // Return the number of players
 app.get('/player/numberplayers', function(req, res) {
@@ -30,20 +25,17 @@ app.get('/player/numberplayers', function(req, res) {
 // Add a player to the game
 app.get('/player/add', function(req, res) {
 
-    index = index + 1
-    names[index] = [req.query.playername]
+    nameIndex = nameIndex + 1
+    names[nameIndex] = [req.query.playername]
 
-    res.send({
-        playerName: req.query.player1name
-    })
+    res.send({status:"1"})
 })
 
 // Rest all variables in order to initiaite a new game
 app.get('/game/reset', function(req, res) {
     names = []
     resetBoard()
-    index = -1
-    console.log('Board reset')
+    nameIndex = -1
     res.send({
         success: "1"
     });
@@ -234,47 +226,48 @@ function applicationTests() {
 //Execute the tests as part of server startup
 applicationTests()
 
+//Determine the winner of the game. This function is invoked per game move.
 function isWinner() {
 
     console.log('board is', board)
 
-    //Determine if winner contained within row
+    //determine if winner contained within row
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 6; ii++) {
-            //  console.log(ii , i)
             if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii][i + 1] && board[ii][i] == board[ii][i + 2] && board[ii][i] == board[ii][i + 3] && board[ii][i] == board[ii][i + 4]) {
+                console.log('Winner in row')
                 return true
             }
         }
     }
 
-    //Determine if winner contained within column
+    //determine if winner contained within column
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 5; ii++) {
-            //console.log(ii , i)
-            if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii + 1][i] && board[ii][i] == board[ii + 2][i] && board[ii][i] == board[ii + 3][i] && board[ii][i] == board[ii][i]) {
+            if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii + 1][i] && board[ii][i] == board[ii + 2][i] && board[ii][i] == board[ii + 3][i] && board[ii][i] == board[ii + 4][i]) {
+                console.log('Winner in col')
                 return true
             }
         }
     }
 
 
-    //Top left to bottom right
+    //top left to bottom right
     for (var i = 0; i < 6; i++) {
         for (var ii = 0; ii < 5; ii++) {
-            //  console.log(ii , i)
             if ((board[ii][i] == 'X' || board[ii][i] == 'O') && board[ii][i] == board[ii + 1][i + 1] && board[ii][i] == board[ii + 2][i + 2] && board[ii][i] == board[ii + 3][i + 3] && board[ii][i] == board[ii + 4][i + 4]) {
+                console.log('Winner in top left to bottom right')
                 return true
             }
         }
     }
 
-    // bottom left to top right
+    //bottom left to top right
     try {
         for (var i = 5; i >= 0; i--) {
             for (var ii = 0; ii < 5; ii++) {
                 if ((board[i][ii] == 'X' || board[i][ii] == 'O') && board[i][ii] == board[i - 1][ii + 1] && board[i][ii] == board[i - 2][ii + 2] && board[i][ii] == board[i - 3][ii + 3] && board[i][ii] == board[i - 4][ii + 4]) {
-
+                    console.log('Winner in bottom left to bottom right')
                     return true
                 }
             }
@@ -287,11 +280,9 @@ function isWinner() {
 
 }
 
-nameIndex = -1
-
 // Return the current board state
 app.get('/game/state', function(req, res) {
-    nameIndex = nameIndex + 1
+
     res.send({
         'board': board,
         'player': names[nameIndex]
@@ -299,24 +290,35 @@ app.get('/game/state', function(req, res) {
     if (nameIndex == 1) {
         nameIndex = -1
     }
+    nameIndex = nameIndex + 1
 })
+
+    if (nameIndex == 1) {
+        nameIndex = -1
+    }
+    nameIndex = nameIndex + 1
 
 // Return the winner of the game
 app.get('/player/winner', function(req, res) {
-    console.log('/winner' + names[nameIndex])
-    if (nameIndex == -1) {
-        nameIndex = nameIndex + 1
+    if(nameIndex == 1) {
+         res.send({
+            winner: names[0]
+        }) 
     }
-    res.send({
-        winner: names[nameIndex]
-    })
+    else {
+        res.send({
+            winner: names[1]
+        }) 
+    }
+
 })
 
 // Move a position on the board
 app.get('/player/move', function(req, res) {
-
-    nameIndex = nameIndex + 1
-
+    if (nameIndex == 1) {
+        nameIndex = -1
+    }
+        nameIndex = nameIndex + 1
     if (nameIndex == 0) {
         board[req.query.rowPosition - 1][req.query.colPosition - 1] = 'O'
     } else if (nameIndex == 1) {
@@ -329,9 +331,5 @@ app.get('/player/move', function(req, res) {
         'player': names[nameIndex],
         'isWin': isWinner()
     })
-    if (nameIndex == 1) {
-        console.log('resetting')
-        nameIndex = -1
-    }
 
 })
